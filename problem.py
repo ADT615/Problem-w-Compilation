@@ -44,7 +44,7 @@ H_static = Hopt.to_matrix() # H_static dưới dạng ma trận
 mapper = JordanWignerMapper()
 
 dipole_ops = dipole.second_q_ops()
-print("Nội dung của dipole_ops:", dipole_ops)
+#print("Nội dung của dipole_ops:", dipole_ops)
 # Lấy toán tử moment lưỡng cực từ phương Z (vì X và Y rỗng)
 dipole_op = dipole_ops["ZDipole"]
 dipole_qubit = mapper.map(dipole_op) # Dipole dưới dạng SparsePauliOp
