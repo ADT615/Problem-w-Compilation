@@ -229,15 +229,14 @@ dipole_interaction_labels = dipole_pauli_op.paulis.to_labels()
 combined_unique_labels = list(dict.fromkeys(static_labels + dipole_interaction_labels))
 num_qubits = Hopt.num_qubits
 
-# 2. Tạo Ansatz U(theta)
 N = num_qubits # num_qubits = 4
-num_ansatz_layers = 1 # Số lớp cho ansatz, thử nghiệm
+num_ansatz_layers = 1 
 
 ansatz_u, optimizable_parameters = create_parameterized_hamiltonian_ansatz(
     nqubits=N,
     pauli_labels_fixed=combined_unique_labels,
     num_layers=num_ansatz_layers,
-    add_classical_bits=True # Giữ True để nhất quán với target_state nếu nó có clbits
+    add_classical_bits=True 
     # initial_coeffs_values có thể được truyền vào optimizer sau
 )
 
@@ -275,13 +274,9 @@ for t_current in times_for_qsp:
         initial_point=np.array(initial_point_for_this_t) 
     )
     
-    # 4. Lấy các tham số tối ưu theta_t_current* cho thời điểm t_current này
+    U_theta_t_current_optimized = ansatz_u.assign_parameters(qsp_instance.thetas) 
     print(f"t = {t_current}, optimal_thetas = {qsp_instance.thetas}")
     
-    # 5. Tạo mạch ansatz U(theta_t_current*) 
-    U_theta_t_current_optimized = ansatz_u.assign_parameters(qsp_instance.thetas)
-    
-    # 6. TÍNH |Psi(t_current)> XẤP XỈ = U(theta_t_current*) |Psi_0_vqe>
     U_theta_t_current_matrix = Operator(U_theta_t_current_optimized).data
     psi_0_vqe_col = psi_0_vqe.reshape(-1, 1)
     psi_t_current_col_approx = U_theta_t_current_matrix @ psi_0_vqe_col
