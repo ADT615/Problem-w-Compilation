@@ -16,7 +16,7 @@ from qiskit.circuit import Parameter, QuantumCircuit, ParameterVector
 from qiskit.circuit.library import PauliEvolutionGate
 from qiskit.quantum_info import Pauli
 from qiskit_algorithms.eigensolvers import NumPyEigensolver
-
+import matplotlib.pyplot as plt
 from scipy.linalg import expm
 driver = PySCFDriver(
     atom="H 0 0 0; H 0 0 0.735",
