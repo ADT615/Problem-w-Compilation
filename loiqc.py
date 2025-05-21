@@ -316,7 +316,66 @@ else:
     else:
         print(f"Không tìm thấy dữ liệu Psi(t) cho t = {t_target_print:.4f} hoặc các điểm lân cận.")
 
+def calculate_expectation_value(state_vector_flat, pauli_op_sparse):
+    if pauli_op_sparse is None:
+        return 0.0 
+    if state_vector_flat is None: 
+        return np.nan 
+        
+    sv = Statevector(state_vector_flat)
+    try:
+        exp_val = sv.expectation_value(pauli_op_sparse)
+        return exp_val.real 
+    except Exception as e_exp:
+        print(f"    Lỗi khi tính giá trị kỳ vọng: {e_exp}")
+        return np.nan 
 
+sorted_times = sorted(all_psi_t_approximated.keys())
+
+times_plot = []
+mux_plot = []
+muy_plot = []
+muz_plot = []
+
+for t_current in sorted_times:
+    psi_t = all_psi_t_approximated[t_current]
+    if psi_t is not None: # Chỉ xử lý nếu psi_t hợp lệ
+        times_plot.append(t_current)
+        
+        current_mux = calculate_expectation_value(psi_t, dipole_qubit_X if 'dipole_qubit_X' in locals() and dipole_qubit_X is not None else None)
+        current_muy = calculate_expectation_value(psi_t, dipole_qubit_Y if 'dipole_qubit_Y' in locals() and dipole_qubit_Y is not None else None)
+        current_muz = calculate_expectation_value(psi_t, dipole_qubit) 
+
+        mux_plot.append(current_mux)
+        muy_plot.append(current_muy)
+        muz_plot.append(current_muz)
+    else:
+        
+        mux_plot.append(np.nan)
+        muy_plot.append(np.nan)
+        muz_plot.append(np.nan)
+
+
+times_plot_np = np.array(times_plot)
+mux_plot_np = np.array(mux_plot)
+muy_plot_np = np.array(muy_plot)
+muz_plot_np = np.array(muz_plot)
+
+plt.figure(figsize=(12, 7))
+
+if np.any(~np.isnan(mux_plot_np)) and np.any(mux_plot_np != 0): 
+    plt.plot(times_plot_np, mux_plot_np, label="$\mu_x(t)$", marker='.')
+if np.any(~np.isnan(muy_plot_np)) and np.any(muy_plot_np != 0): 
+    plt.plot(times_plot_np, muy_plot_np, label="$\mu_y(t)$", marker='.')
+if np.any(~np.isnan(muz_plot_np)): 
+    plt.plot(times_plot_np, muz_plot_np, label="$\mu_z(t)$", marker='.')
+
+plt.xlabel("Thời gian (fs)") 
+plt.ylabel("Moment lưỡng cực (a.u.)")
+plt.title("Tiến hóa của Moment Lưỡng cực theo Thời gian")
+plt.legend()
+plt.grid(True)
+plt.show()
 
 
 
