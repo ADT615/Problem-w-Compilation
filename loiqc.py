@@ -290,6 +290,7 @@ for t_current in times_for_qsp:
         p0s.append(0)
     print("Fidelity vs ansatz co tham so:", p0s)
 
+# Tính psi(t) tại các thời điểm có 4 điểm nên sẽ là times_for_qsp[0],[1],[2],[3]
 t_target_print = times_for_qsp[0]                          
 print(f"\n--- In vector trạng thái Psi(t) tại t = {t_target_print:.4f} ---")
 
